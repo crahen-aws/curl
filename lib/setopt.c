@@ -1293,6 +1293,8 @@ static CURLcode setopt_long(struct Curl_easy *data, CURLoption option,
   case CURLOPT_UPLOAD_FLAGS:
     s->upload_flags = (unsigned char)arg;
     break;
+#ifndef CURL_DISABLE_AWS
+#endif
   default:
     return CURLE_UNKNOWN_OPTION;
   }
@@ -1759,6 +1761,17 @@ static CURLcode setopt_cptr(struct Curl_easy *data, CURLoption option,
     if(s->str[STRING_AWS_SIGV4])
       s->httpauth = CURLAUTH_AWS_SIGV4;
     break;
+  case CURLOPT_AWS_SIGV4_MODE:
+    /*
+     * String that specifies AWS SigV4 signing mode (header or querystring)
+     */
+    return Curl_setstropt(&s->str[STRING_AWS_SIGV4_MODE], ptr);
+
+  case CURLOPT_AWS_SIGV4_ALGORITHM:
+    /*
+     * String that specifies AWS SigV4 algorithm
+     */
+    return Curl_setstropt(&s->str[STRING_AWS_SIGV4_ALGORITHM], ptr);
 #endif
   case CURLOPT_REFERER:
     /*

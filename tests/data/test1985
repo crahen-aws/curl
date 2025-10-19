@@ -1,0 +1,61 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+CURLOPT_AWS_SIGV4
+</keywords>
+</info>
+
+# Server-side
+<reply>
+<data nocheck="yes">
+HTTP/1.1 200 OK
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Server: test-server/fake
+Content-Type: text/html
+Content-Length: 0
+
+</data>
+</reply>
+
+# Client-side
+<client>
+<server>
+http
+</server>
+<features>
+SSL
+Debug
+crypto
+aws
+</features>
+
+<name>
+HTTP AWS_SIGV4 with security token (header mode)
+</name>
+<tool>
+lib%TESTNUMBER
+</tool>
+
+<command>
+http://exam.ple.com:9000/aws_sigv4/testapi/test exam.ple.com:9000:%HOSTIP:%HTTPPORT
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<strip>
+^User-Agent:.*
+^Content-Type:.*
+^Accept:.*
+</strip>
+<protocol>
+GET /aws_sigv4/testapi/test HTTP/1.1
+Host: exam.ple.com:9000
+Authorization: AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/19700101/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-date;x-amz-security-token, Signature=56cc498f708bc4f829c6a3e85917b02d1109ac5e84ffabe5234eb9c9a4b94ac5
+X-Amz-Date: 19700101T000000Z
+X-Amz-Security-Token: IQoJb3JpZ2luX2VjEXAMPLEXVzLWVhc3QtMSJIMEYCIQCGC7ruw358GnqRtZR8JekvTo9lGSPG+9RE5oGx+GbBBwIhAOV3H1KMtusW4Ad6gg2E9coOdc4V7kh6YTCNzvTdDt38KrYDCN///////////wEQARoMMzUyMDI2NTY0NDk3Igywkvm9IrZnJE5G06QqigMmv4WZjZh+Xv4ftN2oPlAPv78OWoX1y/LZa+mXqqtciE00hDL5oHgg4jweYkZV8QIEFrhhbvvi8+lLZtOsxXt5C1YRpY9KJHLNcpnq7OfUJFwwZd6b42KQO+nE3SZj+MMge7cJHSpXWWlSwjnbVqH12flLZrCTNq97sMeRvBCJkPHlG06e79NpY+I/5YeckXWxAOaOZDJZM3cDDEPAyxDmJbI5vFU60W5NMSQ9h1WBJPgpBJprMRvcN5O+gLve5+Di1HYOeW8Y7scOZSJ0Wa1cg4BzOSz+Pbw1g+durrZQZ5IrYhkLsrkSNTI/qrNCaetShI8OyhD9CjNyrED2dS2qrdx4I1qDuEZRHghWMbqZKopK9mMnZx8FEw1QY5ruxAAnqvQ80AIkmmN97UgO/HbvDR3BeGZ/s+bD8kgyPdwm5E3iHvJ/aSgJVVRstydgwlmPLwnodp7WUbW8NWJKP2PfQYK5pfQlUPBdxlOA6I+DK2wVgx0ECV7pvvTwBvB0ZcwStFjJQ9BJUeG2MN+41ccGOpwBLVWtPobQ8DqObRK4Epg2PM1MPF5h84jQSaAiBoPrGJDZXOTd7NQRIhyqb5smydZKSgqv8Z/RBOM7BMONDYgzOqgyAOYHSXHXhcOhfrBH4z/4g0QQ3v0/nlEAQrSbjzc5tOEEBLRy6bLSik46hlJC0gCvv3YATHTIebQXcSFOscMGcp96LqmjmDAUJej9asbyGePIERZbR4+KyyqJMRvcN5O+gLve5+Di1HYOeW8Y7scOZSJ0Wa1cg4BzOSz+Pbw1g+durrZQZ5IrYhkLsrkSNTI/qrNCaetShI8OyhD9CjNyrED2dS2qrdx4I1qDuEZRHghWMbqZKopK9mMnZx8FEw1QY5ruxAAnqvQ80AIkmmN97UgO/HbvDR3BeGZ/s+bD8kgyPdwm5E3iHvJ/aSgJVVRstydgwlmPLwnodp7WUbW8NWJKP2PfQYK5pfQlUPBdxlOA6I+DK2wVgx0ECV7pvvTwBvB0ZcwStFjJQ9BJUeG2MN+41ccGOpwBLVWtPobQ8DqObRK4Epg2PM1MPF5h84jQSaAiBoPrGJDZXOTd7NQRIhyqb5smydZKSgqv8Z/RBOM7BMONDYgzOqgyAOYHSXHXhcOhfrBH4z/4g0QQ3v0/nlEAQrSbjzc5tOEEBLRy6bLSik46hlJC0gCvv3YATHTIebQXcSFOscMGcp96LqmjmDAUJej9asbyGePIERZbR4+KyyqJ
+
+</protocol>
+</verify>
+</testcase>

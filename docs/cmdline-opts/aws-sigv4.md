@@ -13,6 +13,7 @@ See-also:
   - user
 Example:
   - --aws-sigv4 "aws:amz:us-east-2:es" --user "key:secret" $URL
+  - --aws-sigv4 "aws:amz:us-east-2:es" --user "key:secret:token" $URL
 ---
 
 # `--aws-sigv4`

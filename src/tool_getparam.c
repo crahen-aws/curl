@@ -89,6 +89,8 @@ static const struct LongShort aliases[]= {
   {"anyauth",                    ARG_NONE, ' ', C_ANYAUTH},
   {"append",                     ARG_BOOL, 'a', C_APPEND},
   {"aws-sigv4",                  ARG_STRG, ' ', C_AWS_SIGV4},
+  {"aws-sigv4-algorithm",        ARG_STRG, ' ', C_AWS_SIGV4_ALGORITHM},
+  {"aws-sigv4-mode",             ARG_STRG, ' ', C_AWS_SIGV4_MODE},
   {"basic",                      ARG_BOOL, ' ', C_BASIC},
   {"buffer",                     ARG_BOOL|ARG_NO, 'N', C_BUFFER},
   {"ca-native",                  ARG_BOOL|ARG_TLS, ' ', C_CA_NATIVE},
@@ -2371,6 +2373,24 @@ static ParameterError opt_string(struct OperationConfig *config,
   case C_AWS_SIGV4: /* --aws-sigv4 */
     config->authtype |= CURLAUTH_AWS_SIGV4;
     err = getstr(&config->aws_sigv4, nextarg, ALLOW_BLANK);
+    break;
+  case C_AWS_SIGV4_MODE: /* --aws-sigv4-mode */
+    if(!strcmp(nextarg, "header") || !strcmp(nextarg, "querystring"))
+      err = getstr(&config->aws_sigv4_mode, nextarg, DENY_BLANK);
+    else {
+      errorf("Invalid aws-sigv4-mode '%s'. Must be 'header' or 'querystring'",
+             nextarg);
+      err = PARAM_BAD_USE;
+    }
+    break;
+  case C_AWS_SIGV4_ALGORITHM: /* --aws-sigv4-algorithm */
+    if(!strcmp(nextarg, "HMAC-SHA256") ||
+       !strcmp(nextarg, "ECDSA-P256-SHA256"))
+      err = getstr(&config->aws_sigv4_algorithm, nextarg, DENY_BLANK);
+    else {
+      warnf("unsupported algorithm '%s'", nextarg);
+      err = PARAM_BAD_USE;
+    }
     break;
   case C_INTERFACE: /* --interface */
     /* interface */

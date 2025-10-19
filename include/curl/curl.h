@@ -2182,6 +2182,9 @@ typedef enum {
   /* Parameters for V4 signature */
   CURLOPT(CURLOPT_AWS_SIGV4, CURLOPTTYPE_STRINGPOINT, 305),
 
+  /* AWS SigV4 signing mode */
+  CURLOPT(CURLOPT_AWS_SIGV4_MODE, CURLOPTTYPE_STRINGPOINT, 306),
+
   /* Same as CURLOPT_SSL_VERIFYPEER but for DoH (DNS-over-HTTPS) servers. */
   CURLOPT(CURLOPT_DOH_SSL_VERIFYPEER, CURLOPTTYPE_LONG, 306),
 
@@ -2257,6 +2260,9 @@ typedef enum {
 
   /* set TLS supported signature algorithms */
   CURLOPT(CURLOPT_SSL_SIGNATURE_ALGORITHMS, CURLOPTTYPE_STRINGPOINT, 328),
+
+  /* set AWS SigV4 algorithm */
+  CURLOPT(CURLOPT_AWS_SIGV4_ALGORITHM, CURLOPTTYPE_STRINGPOINT, 329),
 
   CURLOPT_LASTENTRY /* the last unused */
 } CURLoption;

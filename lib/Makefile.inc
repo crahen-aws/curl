@@ -205,6 +205,7 @@ LIB_CFILES =         \
   http1.c            \
   http2.c            \
   http_aws_sigv4.c   \
+  http_aws_sigv4a.c  \
   http_chunks.c      \
   http_digest.c      \
   http_negotiate.c   \

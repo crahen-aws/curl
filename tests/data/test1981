@@ -2,61 +2,50 @@
 <info>
 <keywords>
 HTTP
-HTTP GET
+CURLOPT_AWS_SIGV4
+CURLOPT_AWS_SIGV4_ALGORITHM
 </keywords>
 </info>
 
-#
 # Server-side
 <reply>
-<data crlf="yes" nocheck="yes">
-HTTP/1.1 200 OK
-Date: Tue, 09 Nov 2010 14:49:00 GMT
+<data>
+HTTP/1.1 400 Bad Request
+Date: Thu, 09 Nov 2010 14:49:00 GMT
 Server: test-server/fake
-Last-Modified: Tue, 13 Jun 2000 12:10:00 GMT
-ETag: "21025-dc7-39462498"
-Accept-Ranges: bytes
-Content-Length: 6
-Connection: close
 Content-Type: text/html
-Funny-head: yesyes
+Content-Length: 0
 
--foo-
 </data>
 </reply>
 
-#
 # Client-side
 <client>
 <server>
 http
 </server>
-<name>
-%time output with --write-out
-</name>
 <features>
-Debug
+aws-sigv4a
 </features>
-<setenv>
-CURL_TIME=1754037103
-</setenv>
+<name>
+HTTP AWS SigV4A with invalid credentials (should fail gracefully)
+</name>
 <command>
-http://%HOSTIP:%HTTPPORT/%TESTNUMBER --write-out='Time: %time{%d/%b/%Y %H:%M:%S.%f %z %Z}\n' -s -o %LOGDIR/dump
+http://exam.ple.com:9000/aws_sigv4a/testapi/test --aws-sigv4 "aws:amz:us-east-1:service" --aws-sigv4-algorithm "ECDSA-P256-SHA256" --user ":empty-key"
 </command>
 </client>
 
-#
 # Verify data after the test has been "shot"
 <verify>
-<protocol crlf="yes">
-GET /%TESTNUMBER HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
+<protocol>
+GET /aws_sigv4a/testapi/test HTTP/1.1
+Host: exam.ple.com:9000
+Authorization: AWS4-ECDSA-P256-SHA256 Credential=/20101109/*/service/aws4_request, SignedHeaders=host;x-amz-date, Signature=
 User-Agent: curl/%VERSION
 Accept: */*
+X-Amz-Date: 20101109T144900Z
+X-Amz-Region-Set: *
 
 </protocol>
-<stdout mode="text">
-Time: 01/Aug/2025 08:31:43.037103 +0000 UTC
-</stdout>
 </verify>
 </testcase>

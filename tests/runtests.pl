@@ -520,7 +520,7 @@ sub checksystemfeatures {
 
     my $curlverout="$LOGDIR/curlverout.log";
     my $curlvererr="$LOGDIR/curlvererr.log";
-    my $versioncmd=exerunner() . shell_quote($CURL) . " --version 1>$curlverout 2>$curlvererr";
+    my $versioncmd=shell_quote($CURL) . " --version 1>$curlverout 2>$curlvererr";
 
     unlink($curlverout);
     unlink($curlvererr);
@@ -536,7 +536,7 @@ sub checksystemfeatures {
     @version = <$versout>;
     close($versout);
 
-    open(my $disabledh, "-|", exerunner() . shell_quote($CURLINFO));
+    open(my $disabledh, "-|", shell_quote($CURLINFO));
     while(<$disabledh>) {
         if($_ =~ /([^:]*): ([ONF]*)/) {
             my ($val, $toggle) = ($1, $2);
@@ -825,6 +825,11 @@ sub checksystemfeatures {
 
     # Use this as a proxy for any cryptographic authentication
     $feature{"crypto"} = $feature{"NTLM"} || $feature{"Kerberos"} || $feature{"SPNEGO"};
+    # AWS SigV4 support detection
+    $feature{"aws"} = $feature{"crypto"}; # AWS SigV4 is available when crypto is available
+    # AWS SigV4A requires OpenSSL 1.1.0+ for ECDSA P-256 support
+    my $openssl_version = `openssl version 2>/dev/null` || "";
+    $feature{"aws-sigv4a"} = $feature{"aws"} && ($openssl_version =~ /OpenSSL\s+([1-9]\d*\.\d+)/ && $1 >= 1.1);
     $feature{"local-http"} = servers::localhttp();
     $feature{"codeset-utf8"} = is_utf8_supported();
     if($feature{"codeset-utf8"}) {
@@ -2295,7 +2300,10 @@ while(@ARGV) {
     }
     elsif($ARGV[0] eq "-c") {
         # use this path to curl instead of default
-        $DBGCURL=$CURL=$ARGV[1];
+        if($ARGV[1] && $ARGV[1] ne "1") {
+            $DBGCURL=$CURL=$ARGV[1];
+        }
+        # if -c 1 is used, keep the default $CURL from globalconfig.pm
         shift @ARGV;
     }
     elsif($ARGV[0] eq "-vc") {
@@ -2585,10 +2593,12 @@ if(!$randseed) {
     # seed of the month. December 2019 becomes 201912
     $randseed = ($year+1900)*100 + $mon+1;
     print "Using curl: $CURL\n";
-    open(my $curlvh, "-|", exerunner() . shell_quote($CURL) . " --version 2>$dev_null") ||
-        die "could not get curl version!";
-    my @c = <$curlvh>;
-    close($curlvh) || die "could not get curl version!";
+    my @c = `$CURL --version 2>&1`;
+    if($? != 0) {
+        die "could not get curl version! Command failed: $CURL --version Exit: $?";
+    }
+    print "DEBUG: Got output lines: " . scalar(@c) . "\n";
+    print "DEBUG: First line: " . ($c[0] || "NONE") . "\n";
     # use the first line of output and get the md5 out of it
     my $str = md5($c[0]);
     $randseed += unpack('S', $str);  # unsigned 16 bit value

@@ -1,0 +1,58 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+CURLOPT_AWS_SIGV4
+</keywords>
+</info>
+
+# Server-side
+<reply>
+<data nocheck="yes">
+HTTP/1.1 200 OK
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Server: test-server/fake
+Content-Type: text/html
+Content-Length: 0
+
+</data>
+</reply>
+
+# Client-side
+<client>
+<server>
+http
+</server>
+<features>
+SSL
+Debug
+crypto
+aws
+</features>
+
+<name>
+HTTP AWS_SIGV4 with special characters in security token
+</name>
+<tool>
+lib%TESTNUMBER
+</tool>
+
+<command>
+http://exam.ple.com:9000/aws_sigv4/testapi/test exam.ple.com:9000:%HOSTIP:%HTTPPORT
+</command>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<strip>
+^User-Agent:.*
+^Content-Type:.*
+^Accept:.*
+</strip>
+<protocol>
+GET /aws_sigv4/testapi/test?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=xxx%2F19700101%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=19700101T000000Z&X-Amz-Expires=86400&X-Amz-Security-Token=test%2Btoken%2F123%3D&X-Amz-SignedHeaders=host&X-Amz-Signature= HTTP/1.1
+Host: exam.ple.com:9000
+
+</protocol>
+</verify>
+</testcase>

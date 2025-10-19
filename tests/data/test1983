@@ -2,6 +2,7 @@
 <info>
 <keywords>
 HTTP
+POST
 CURLOPT_AWS_SIGV4
 CURLOPT_AWS_SIGV4_ALGORITHM
 </keywords>
@@ -28,24 +29,27 @@ http
 aws-sigv4a
 </features>
 <name>
-HTTP AWS SigV4A with ECDSA-P256-SHA256 algorithm
+HTTP AWS SigV4A POST request with body
 </name>
 <command>
-http://exam.ple.com:9000/aws_sigv4a/testapi/test --aws-sigv4 "aws:amz:us-east-1:service" --aws-sigv4-algorithm "ECDSA-P256-SHA256" --user "keyId:secretKey"
+http://exam.ple.com:9000/aws_sigv4a/testapi/test --aws-sigv4 "aws:amz:us-east-1:service" --aws-sigv4-algorithm "ECDSA-P256-SHA256" --user "keyId:secretKey" -d "test-data"
 </command>
 </client>
 
 # Verify data after the test has been "shot"
 <verify>
 <protocol>
-GET /aws_sigv4a/testapi/test HTTP/1.1
+POST /aws_sigv4a/testapi/test HTTP/1.1
 Host: exam.ple.com:9000
-Authorization: AWS4-ECDSA-P256-SHA256 Credential=keyId/20101109/*/service/aws4_request, SignedHeaders=host;x-amz-date, Signature=
+Authorization: AWS4-ECDSA-P256-SHA256 Credential=keyId/20101109/*/service/aws4_request, SignedHeaders=content-length;content-type;host;x-amz-date, Signature=
 User-Agent: curl/%VERSION
 Accept: */*
 X-Amz-Date: 20101109T144900Z
 X-Amz-Region-Set: *
+Content-Length: 9
+Content-Type: application/x-www-form-urlencoded
 
+test-data
 </protocol>
 </verify>
 </testcase>

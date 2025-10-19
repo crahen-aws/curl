@@ -28,10 +28,10 @@ http
 aws-sigv4a
 </features>
 <name>
-HTTP AWS SigV4A with ECDSA-P256-SHA256 algorithm
+HTTP AWS SigV4A with custom headers
 </name>
 <command>
-http://exam.ple.com:9000/aws_sigv4a/testapi/test --aws-sigv4 "aws:amz:us-east-1:service" --aws-sigv4-algorithm "ECDSA-P256-SHA256" --user "keyId:secretKey"
+http://exam.ple.com:9000/aws_sigv4a/testapi/test --aws-sigv4 "aws:amz:us-east-1:service" --aws-sigv4-algorithm "ECDSA-P256-SHA256" --user "keyId:secretKey" -H "X-Custom-Header: test-value" -H "X-Another-Header: another-value"
 </command>
 </client>
 
@@ -40,11 +40,13 @@ http://exam.ple.com:9000/aws_sigv4a/testapi/test --aws-sigv4 "aws:amz:us-east-1:
 <protocol>
 GET /aws_sigv4a/testapi/test HTTP/1.1
 Host: exam.ple.com:9000
-Authorization: AWS4-ECDSA-P256-SHA256 Credential=keyId/20101109/*/service/aws4_request, SignedHeaders=host;x-amz-date, Signature=
+Authorization: AWS4-ECDSA-P256-SHA256 Credential=keyId/20101109/*/service/aws4_request, SignedHeaders=host;x-amz-date;x-another-header;x-custom-header, Signature=
 User-Agent: curl/%VERSION
 Accept: */*
 X-Amz-Date: 20101109T144900Z
 X-Amz-Region-Set: *
+X-Custom-Header: test-value
+X-Another-Header: another-value
 
 </protocol>
 </verify>
